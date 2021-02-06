@@ -25,10 +25,10 @@
     require_once("scripts/connect_db.php");
 
 
-    $index_selecting_quiz = mysql_query("SELECT quiz_id, display_questions, time_allotted, quiz_name
+    $index_selecting_quiz = $mysqli->query("SELECT quiz_id, display_questions, time_allotted, quiz_name
                                     FROM quizes WHERE set_default=1");
-    $index_selecting_quiz_row = mysql_fetch_array($index_selecting_quiz);
-    $index_selecting_quiz_num = mysql_num_rows($index_selecting_quiz);
+    $index_selecting_quiz_row = $index_selecting_quiz->fetch_array();
+    $index_selecting_quiz_num = $index_selecting_quiz->num_rows;
 
 
 
@@ -191,7 +191,7 @@
                             to pass time!
                         </td>
                         <td align="right" id="developer" >
-                            Quiz Designed &amp; Developed by : 
+                            Quiz Designed & Developed by : 
                             <a href="mailto: rahul_jain@live.in" class="flink" style="color: #c4dcf5">
                                 Rahul Jain<div id="dev_info">1139234/CSE/6thSEM</div>
                             </a>

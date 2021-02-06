@@ -15,18 +15,18 @@
 				@$php_id = $_POST[$fetch_ID];
 
 				if($php_id){
-					$check_sql = mysql_query("SELECT quiz_id FROM questions 
-	                                            WHERE question_id='$php_id'") or die(mysql_error());
-					$qz_id_array = mysql_fetch_array($check_sql);
+					$check_sql = $mysqli->query("SELECT quiz_id FROM questions 
+	                                            WHERE question_id='$php_id'") or die($mysqli->error);
+					$qz_id_array = $check_sql->fetch_array();
 	            	$qz_id = $qz_id_array[0];
 
-					mysql_query("DELETE FROM questions 
-									WHERE question_id='$php_id'")or die(mysql_error());
-					mysql_query("DELETE FROM answers 
-									WHERE question_id='$php_id'")or die(mysql_error());
+					$mysqli->query("DELETE FROM questions 
+									WHERE question_id='$php_id'")or die($mysqli->error);
+					$mysqli->query("DELETE FROM answers 
+									WHERE question_id='$php_id'")or die($mysqli->error);
 
-					mysql_query("UPDATE quizes SET total_questions=total_questions-1 
-									WHERE quiz_id='$qz_id' LIMIT 1")or die(mysql_error());
+					$mysqli->query("UPDATE quizes SET total_questions=total_questions-1 
+									WHERE quiz_id='$qz_id' LIMIT 1")or die($mysqli->error);
 					$questIDs .= $i.', ';
 
 				}

@@ -8,19 +8,19 @@
 
         session_start();
         {
-            $user=mysql_real_escape_string($_POST['login']);
-            $pass=mysql_real_escape_string($_POST['password']);
-            $fetch=mysql_query("SELECT id FROM admins 
-                                WHERE username='$user' and password='$pass'")or die(mysql_error());
-            $count=mysql_num_rows($fetch);
+            $user=$mysqli->real_escape_string($_POST['login']);
+            $pass=$mysqli->real_escape_string($_POST['password']);
+            $fetch=$mysqli->query("SELECT id FROM admins 
+                                WHERE username='$user' and password='$pass'")or die($mysqli->error);
+            $count=$fetch->num_rows;
             if($count!="")
             {
             //    session_register("sessionusername");
                 $_SESSION['login_username']=$user;
 
-                mysql_query("UPDATE admins 
+                $mysqli->query("UPDATE admins 
                              SET last_login=now()
-                             WHERE username = '$user' ")or die(mysql_error());
+                             WHERE username = '$user' ")or die($mysqli->error);
 
                 header("Location:admin.php");
             }

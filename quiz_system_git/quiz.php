@@ -26,9 +26,9 @@
 
 	require_once("scripts/connect_db.php");
 
-	$selecting_quiz = mysql_query("SELECT quiz_id, display_questions, time_allotted, quiz_name
+	$selecting_quiz = $mysqli->query("SELECT quiz_id, display_questions, time_allotted, quiz_name
 									FROM quizes WHERE set_default=1");
-	$selecting_quiz_row = mysql_fetch_array($selecting_quiz);
+	$selecting_quiz_row = $selecting_quiz->fetch_array();
 
 
 
@@ -39,7 +39,7 @@
 	 //getting values in variables
 		$roll_no = $_POST['rollno'];
 		$roll_no = htmlspecialchars($roll_no);
-		$roll_no = mysql_real_escape_string($roll_no);
+		$roll_no = $mysqli->real_escape_string($roll_no);
 
 		$total_questions = preg_replace('/[^0-9]/', "", $selecting_quiz_row['display_questions']);
 
@@ -51,18 +51,18 @@
 		$quzz_name = $selecting_quiz_row['quiz_name'];
 
 	 //checking if user has already taken this quiz
-		$userCheck = mysql_query(" SELECT id FROM quiz_takers 
+		$userCheck = $mysqli->query(" SELECT id FROM quiz_takers 
 										WHERE username = '$roll_no' 
-										AND quiz_id='$final_quiz_ID' ")or die(mysql_error());
+										AND quiz_id='$final_quiz_ID' ")or die($mysqli->error);
 	 //if user already did, redirect to index.php with error
-		if(!(mysql_num_rows($userCheck) < 1)){
+		if(!($userCheck->num_rows < 1)){
 			$user_msg = 'Sorry, but '.$roll_no.', has already attempted the quiz, '.$quzz_name.'!';
 			header('location: index.php?user_msg='.$user_msg.'');
 			exit();
 		}else{
 	 //else inserting few columns into the table
-		mysql_query("INSERT INTO quiz_takers (username, percentage, date_time, quiz_id, duration) 
-					 VALUES ('$roll_no', '0', now(), '$final_quiz_ID', '0')")or die(mysql_error());
+		$mysqli->query("INSERT INTO quiz_takers (username, percentage, date_time, quiz_id, duration) 
+					 VALUES ('$roll_no', '0', now(), '$final_quiz_ID', '0')")or die($mysqli->error);
 		}
 	}else{
 		$user_msg = 'Hey, This is the start Page, So enter your username here first';
@@ -82,10 +82,10 @@
 	$m_output='';
  
  //Getting the questions from DB here
-	$m_questions_from_DB = mysql_query("SELECT * FROM questions WHERE quiz_id='$final_quiz_ID'
+	$m_questions_from_DB = $mysqli->query("SELECT * FROM questions WHERE quiz_id='$final_quiz_ID'
 								ORDER BY rand() LIMIT $total_questions");
 
-		while (mysql_num_rows($m_questions_from_DB)<1) {
+		while ($m_questions_from_DB->num_rows<1) {
 			$user_msg = 'Hey, weird, but it seems there are no questions in this quiz!';
 			header('location: index.php?user_msg='.$user_msg.'');
 			exit();
@@ -95,7 +95,7 @@
 		$m_display_ID = 1;
 
 	 //looping through the questions and adding them on the page
-		while($m_row = mysql_fetch_array($m_questions_from_DB)){
+		while($m_row = $m_questions_from_DB->fetch_array()){
 		 //initializing the options
 			$m_answers='';
 				
@@ -128,7 +128,7 @@
 			}
 
 		 //gathering options of the question here
-			$m_options_from_DB = mysql_query("SELECT * FROM answers 
+			$m_options_from_DB = $mysqli->query("SELECT * FROM answers 
 									WHERE question_id='$m_question_id' ORDER BY rand()");
 
 				$m_answers .=  '<tr>
@@ -136,7 +136,7 @@
 									<td>
 								';
 				 //adding html to individual options here
-					while($m_row2 = mysql_fetch_array($m_options_from_DB)){
+					while($m_row2 = $m_options_from_DB->fetch_array()){
 					 //getting row attributes in variables
 						$m_answer = $m_row2['answer'];
 						$m_answer_ID = $m_row2['id'];

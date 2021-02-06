@@ -64,22 +64,22 @@
 
 	 //getting and converting strings as they are
 		$question = htmlspecialchars($question);
-		$question = mysql_real_escape_string($question);
+		$question = $mysqli->real_escape_string($question);
 
 		$program = htmlspecialchars($program);
-		$program = mysql_real_escape_string($program);
+		$program = $mysqli->real_escape_string($program);
 
 		$answer1 = htmlspecialchars($answer1);
-		$answer1 = mysql_real_escape_string($answer1);
+		$answer1 = $mysqli->real_escape_string($answer1);
 
 		$answer2 = htmlspecialchars($answer2);
-		$answer2 = mysql_real_escape_string($answer2);
+		$answer2 = $mysqli->real_escape_string($answer2);
 
 		$answer3 = htmlspecialchars($answer3);
-		$answer3 = mysql_real_escape_string($answer3);
+		$answer3 = $mysqli->real_escape_string($answer3);
 
 		$answer4 = htmlspecialchars($answer4);
-		$answer4 = mysql_real_escape_string($answer4);
+		$answer4 = $mysqli->real_escape_string($answer4);
 
 
 
@@ -112,13 +112,13 @@
 		}
 		
 	 //inserting the question and type into table question
-		$sql = mysql_query("INSERT INTO questions (quiz_id, question, code, code_type, type) VALUES ('$quizID', '$question', '$program', '$programType', '$type')")or die(mysql_error());
+		$sql = $mysqli->query("INSERT INTO questions (quiz_id, question, code, code_type, type) VALUES ('$quizID', '$question', '$program', '$programType', '$type')")or die($mysqli->error);
 		//lastId is there, so we can insert the id, question_id in our table
-			$lastId = mysql_insert_id();
-			mysql_query("UPDATE questions SET question_id='$lastId' WHERE id='$lastId' LIMIT 1")or die(mysql_error());
+			$lastId = $mysqli->insert_id;
+			$mysqli->query("UPDATE questions SET question_id='$lastId' WHERE id='$lastId' LIMIT 1")or die($mysqli->error);
 
 	 ///////Updating value of total questions in quizes
-		mysql_query("UPDATE quizes SET total_questions=total_questions+1 WHERE quiz_id='$quizID' LIMIT 1")or die(mysql_error());
+		$mysqli->query("UPDATE quizes SET total_questions=total_questions+1 WHERE quiz_id='$quizID' LIMIT 1")or die($mysqli->error);
 
 
  	 /// Update answers based on which is correct //////////////
@@ -127,16 +127,16 @@
 		if($type == 'tf'){
 		 //if answer1 is marked correct, do this--
 			if($isCorrect == "answer1"){
-				$sql2 = mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer1', '1')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer2', '0')")or die(mysql_error());
+				$sql2 = $mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer1', '1')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer2', '0')")or die($mysqli->error);
 				$msg = 'Thanks, question no.'.$lastId.' has been added';
 		  		header('location: admin.php?msg='.$msg.'');
 				exit();
 			}
 		 //if answer2 is marked correct, do this--
 			if($isCorrect == "answer2"){
-				$sql2 = mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer2', '1')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer1', '0')")or die(mysql_error());
+				$sql2 = $mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer2', '1')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer1', '0')")or die($mysqli->error);
 				$msg = 'Thanks, question no.'.$lastId.' has been added';
 				header('location: admin.php?msg='.$msg.'');
 				exit();
@@ -147,40 +147,40 @@
 		if($type == 'mc'){
 		 //if answer1 is marked correct, do this--
 			if($isCorrect == "answer1"){
-				$sql2 = mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer1', '1')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer2', '0')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer3', '0')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer4', '0')")or die(mysql_error());
+				$sql2 = $mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer1', '1')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer2', '0')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer3', '0')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer4', '0')")or die($mysqli->error);
 				$msg = 'Thanks, question no.'.$lastId.' has been added';
 			  	header('location: admin.php?msg='.$msg.'');
 				exit();
 			}
 		 //if answer2 is marked correct, do this--
 			if($isCorrect == "answer2"){
-				$sql2 = mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer2', '1')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer1', '0')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer3', '0')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer4', '0')")or die(mysql_error());
+				$sql2 = $mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer2', '1')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer1', '0')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer3', '0')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer4', '0')")or die($mysqli->error);
 				$msg = 'Thanks, question no.'.$lastId.' has been added';
 		  		header('location: admin.php?msg='.$msg.'');
 				exit();
 			}
 		 //if answer3 is marked correct, do this--
 			if($isCorrect == "answer3"){
-				$sql2 = mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer3', '1')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer1', '0')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer2', '0')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer4', '0')")or die(mysql_error());
+				$sql2 = $mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer3', '1')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer1', '0')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer2', '0')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer4', '0')")or die($mysqli->error);
 				$msg = 'Thanks, question no.'.$lastId.' has been added';
 		  		header('location: admin.php?msg='.$msg.'');
 				exit();
 			}
 		 //if answer4 is marked correct, do this--
 			if($isCorrect == "answer4"){
-				$sql2 = mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer4', '1')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer1', '0')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer2', '0')")or die(mysql_error());
-				mysql_query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer3', '0')")or die(mysql_error());
+				$sql2 = $mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer4', '1')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer1', '0')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer2', '0')")or die($mysqli->error);
+				$mysqli->query("INSERT INTO answers (quiz_id, question_id, answer, correct) VALUES ('$quizID', '$lastId', '$answer3', '0')")or die($mysqli->error);
 				$msg = 'Thanks, question no.'.$lastId.' has been added';
 			  	header('location: admin.php?msg='.$msg.'');
 				exit();
@@ -196,13 +196,13 @@
 	if(isset($_GET['msg'])){
 		$msg = $_GET['msg'];
 		$msg = strip_tags($msg);
-		$msg = mysql_real_escape_string($msg);
+		$msg = $mysqli->real_escape_string($msg);
 	}
 
 	if(isset($_POST['msg'])){
 		$msg = $_POST['msg'];
 		$msg = strip_tags($msg);
-		$msg = mysql_real_escape_string($msg);
+		$msg = $mysqli->real_escape_string($msg);
 	}
 ?>
 
@@ -219,14 +219,14 @@
 		$resetT = preg_replace('/[^a-z]/', "", $resetT);
 
 		if($resetT=='yes'){
-			mysql_query("TRUNCATE TABLE admins")or die(mysql_error());
-			mysql_query("TRUNCATE TABLE answers")or die(mysql_error());
-			mysql_query("TRUNCATE TABLE questions")or die(mysql_error());
-			mysql_query("TRUNCATE TABLE quizes")or die(mysql_error());
-			mysql_query("TRUNCATE TABLE quiz_takers")or die(mysql_error());
+			$mysqli->query("TRUNCATE TABLE admins")or die($mysqli->error);
+			$mysqli->query("TRUNCATE TABLE answers")or die($mysqli->error);
+			$mysqli->query("TRUNCATE TABLE questions")or die($mysqli->error);
+			$mysqli->query("TRUNCATE TABLE quizes")or die($mysqli->error);
+			$mysqli->query("TRUNCATE TABLE quiz_takers")or die($mysqli->error);
 
-			mysql_query("INSERT INTO admins (username, password) 
-            	VALUES ('admin','12345')")or die(mysql_error());
+			$mysqli->query("INSERT INTO admins (username, password) 
+            	VALUES ('admin','12345')")or die($mysqli->error);
 		}
 		
 		echo "Alright then, your database is now reset! Just re-login with new ID.";
@@ -245,21 +245,21 @@
 	if(isset($_POST['editaquestion']) && $_POST['editaquestion'] != ""){
 		$editQ = $_POST['editaquestion'];
 
-		$get_quiz_id_SQL = mysql_query("SELECT quiz_id FROM quizes 
-										WHERE quiz_name = '$editQ'")or die(mysql_error());
-		$get_quiz_id_rows = mysql_fetch_array($get_quiz_id_SQL);
+		$get_quiz_id_SQL = $mysqli->query("SELECT quiz_id FROM quizes 
+										WHERE quiz_name = '$editQ'")or die($mysqli->error);
+		$get_quiz_id_rows = $get_quiz_id_SQL->fetch_array();
 		$get_quiz_id = $get_quiz_id_rows['quiz_id'];
 
 		$m_output='';
 
 		if($editQ=='allthequestions')
-			$multipleSQL = mysql_query("SELECT * FROM questions") or die(mysql_error());
+			$multipleSQL = $mysqli->query("SELECT * FROM questions") or die($mysqli->error);
 		else
-			$multipleSQL = mysql_query("SELECT * FROM questions WHERE quiz_id = '$get_quiz_id'");
+			$multipleSQL = $mysqli->query("SELECT * FROM questions WHERE quiz_id = '$get_quiz_id'");
 
 			$m_display_ID = 1;
 
-			while($m_row = mysql_fetch_array($multipleSQL)){
+			while($m_row = $multipleSQL->fetch_array()){
 				$m_answers='';
 			 //id var = id column and so on
 				$m_id = $m_row['id'];
@@ -270,9 +270,9 @@
 				$m_code_type = $m_row['code_type'];
 				$m_quiz_id = $m_row['quiz_id'];
 
-				$m_quiz_id_SQL = mysql_query("SELECT quiz_name FROM quizes 
-												WHERE quiz_id='$m_quiz_id'") or die(mysql_error());
-				$m_quiz_id_SQL_row = mysql_fetch_array($m_quiz_id_SQL);
+				$m_quiz_id_SQL = $mysqli->query("SELECT quiz_name FROM quizes 
+												WHERE quiz_id='$m_quiz_id'") or die($mysqli->error);
+				$m_quiz_id_SQL_row = $m_quiz_id_SQL->fetch_array();
 				$m_quiz_name = $m_quiz_id_SQL_row['quiz_name'];
 
 
@@ -309,7 +309,7 @@
 				}
 
 			 //gathering answers of question here
-				$m_sql2 = mysql_query("SELECT * FROM answers WHERE question_id='$m_question_id'") or die(mysql_error());
+				$m_sql2 = $mysqli->query("SELECT * FROM answers WHERE question_id='$m_question_id'") or die($mysqli->error);
 				//running loop on all the answers
 
 				$m_answers .=  '<tr>
@@ -318,7 +318,7 @@
 										<ol type="a">
 								';
 
-					while($m_row2 = mysql_fetch_array($m_sql2)){
+					while($m_row2 = $m_sql2->fetch_array()){
 					//putting column values in variables
 						$m_answer = $m_row2['answer'];
 						$m_correct = $m_row2['correct'];
@@ -374,9 +374,9 @@
 		$editAQ = preg_replace('/[^0-9]/', "", $editAQ);
 
 	 //getting everything about the question
-		$getaquestion_SQL = mysql_query("SELECT * FROM questions 
-						WHERE question_id='$editAQ'")or die(mysql_error());
-		$getaquestion_row = mysql_fetch_array($getaquestion_SQL);
+		$getaquestion_SQL = $mysqli->query("SELECT * FROM questions 
+						WHERE question_id='$editAQ'")or die($mysqli->error);
+		$getaquestion_row = $getaquestion_SQL->fetch_array();
 
 		$gaq_id = $getaquestion_row['id'];
 		$gaq_quiz_id = $getaquestion_row['quiz_id'];
@@ -387,13 +387,13 @@
 		$gaq_type = $getaquestion_row['type'];
 	 //converting program into what it ought to be
 		$gaq_code_editor = htmlspecialchars_decode($gaq_code_editor);
-		$gaq_code_editor = mysql_real_escape_string($gaq_code_editor);
+		$gaq_code_editor = $mysqli->real_escape_string($gaq_code_editor);
 		$gaq_code_editor = str_replace(array("\r\n", "\r", "\n"), '\n', $gaq_code_editor);
 
 
 
-		$getanswers_SQL = mysql_query("SELECT * FROM answers 
-						WHERE question_id='$editAQ'")or die(mysql_error());
+		$getanswers_SQL = $mysqli->query("SELECT * FROM answers 
+						WHERE question_id='$editAQ'")or die($mysqli->error);
 
 	 //if question is true/false type
 		if($gaq_type=='tf'){
@@ -414,7 +414,7 @@
 			}
 		 //getting answers of T/F questions
 			$ga_index=1;
-			while($getanswers_row = mysql_fetch_array($getanswers_SQL)){
+			while($getanswers_row = $getanswers_SQL->fetch_array()){
 				$ga_answer = $getanswers_row['answer'];
 				$ga_correct = $getanswers_row['correct'];
 
@@ -460,10 +460,10 @@
 			}
 
 			$ga_index=1;
-			while($getanswers_row = mysql_fetch_array($getanswers_SQL)){
+			while($getanswers_row = $getanswers_SQL->fetch_array()){
 				$ga_answer = $getanswers_row['answer'];
 				$ga_correct = $getanswers_row['correct'];
-				$ga_answer = mysql_real_escape_string($ga_answer);
+				$ga_answer = $mysqli->real_escape_string($ga_answer);
 
 				if($ga_correct==1){
 					$editQoutput .= '<script>
@@ -506,21 +506,21 @@
 	if(isset($_POST['deleteSomeQuestions']) && $_POST['deleteSomeQuestions'] != ""){
 		$deleteSQ = $_POST['deleteSomeQuestions'];
 
-		$get_quiz_id_SQL = mysql_query("SELECT quiz_id FROM quizes 
-										WHERE quiz_name = '$deleteSQ'")or die(mysql_error());
-		$get_quiz_id_rows = mysql_fetch_array($get_quiz_id_SQL);
+		$get_quiz_id_SQL = $mysqli->query("SELECT quiz_id FROM quizes 
+										WHERE quiz_name = '$deleteSQ'")or die($mysqli->error);
+		$get_quiz_id_rows = $get_quiz_id_SQL->fetch_array();
 		$get_quiz_id = $get_quiz_id_rows['quiz_id'];
 
 		$m_output='';
 
 		if($deleteSQ=='allthequestions')
-			$multipleSQL = mysql_query("SELECT * FROM questions") or die(mysql_error());
+			$multipleSQL = $mysqli->query("SELECT * FROM questions") or die($mysqli->error);
 		else
-			$multipleSQL = mysql_query("SELECT * FROM questions WHERE quiz_id = '$get_quiz_id'");
+			$multipleSQL = $mysqli->query("SELECT * FROM questions WHERE quiz_id = '$get_quiz_id'");
 
 			$m_display_ID = 1;
 
-			while($m_row = mysql_fetch_array($multipleSQL)){
+			while($m_row = $multipleSQL->fetch_array()){
 				$m_answers='';
 			 //id var = id column and so on
 				$m_id = $m_row['id'];
@@ -531,9 +531,9 @@
 				$m_code_type = $m_row['code_type'];
 				$m_quiz_id = $m_row['quiz_id'];
 
-				$m_quiz_id_SQL = mysql_query("SELECT quiz_name FROM quizes 
-												WHERE quiz_id='$m_quiz_id'") or die(mysql_error());
-				$m_quiz_id_SQL_row = mysql_fetch_array($m_quiz_id_SQL);
+				$m_quiz_id_SQL = $mysqli->query("SELECT quiz_name FROM quizes 
+												WHERE quiz_id='$m_quiz_id'") or die($mysqli->error);
+				$m_quiz_id_SQL_row = $m_quiz_id_SQL->fetch_array();
 				$m_quiz_name = $m_quiz_id_SQL_row['quiz_name'];
 
 
@@ -570,7 +570,7 @@
 				}
 
 			 //gathering answers of question here
-				$m_sql2 = mysql_query("SELECT * FROM answers WHERE question_id='$m_question_id'") or die(mysql_error());
+				$m_sql2 = $mysqli->query("SELECT * FROM answers WHERE question_id='$m_question_id'") or die($mysqli->error);
 				//running loop on all the answers
 
 				$m_answers .=  '<tr>
@@ -579,7 +579,7 @@
 										<ol type="a">
 								';
 
-					while($m_row2 = mysql_fetch_array($m_sql2)){
+					while($m_row2 = $m_sql2->fetch_array()){
 					//putting column values in variables
 						$m_answer = $m_row2['answer'];
 						$m_correct = $m_row2['correct'];
@@ -630,12 +630,12 @@
 
 		require_once("scripts/connect_db.php");
 
-		mysql_query("DELETE FROM admins WHERE username = '$deleteA'")or die(mysql_error());
+		$mysqli->query("DELETE FROM admins WHERE username = '$deleteA'")or die($mysqli->error);
 
 	//checking the admins table
-		$admin_SQL = mysql_query("SELECT id FROM admins 
-									WHERE username = '$deleteA'")or die(mysql_error());
-		$admin_numSQL = mysql_num_rows($admin_SQL);
+		$admin_SQL = $mysqli->query("SELECT id FROM admins 
+									WHERE username = '$deleteA'")or die($mysqli->error);
+		$admin_numSQL = $admin_SQL->num_rows;
 
 		if($admin_numSQL > 0){
 			echo "Sorry, there was a problem deleting the /".$deleteA."/ admin. Please try again later.";
@@ -657,15 +657,15 @@
 		require_once("scripts/connect_db.php");
 
 	 ///////Updating value of set_default in quizes
-		mysql_query("UPDATE quizes SET set_default=0 WHERE set_default=1")or die(mysql_error());
-		mysql_query("UPDATE quizes SET set_default=1 WHERE quiz_name='$defaultQ'")or die(mysql_error());
+		$mysqli->query("UPDATE quizes SET set_default=0 WHERE set_default=1")or die($mysqli->error);
+		$mysqli->query("UPDATE quizes SET set_default=1 WHERE quiz_name='$defaultQ'")or die($mysqli->error);
 
 
  //checking if update is successful
 	//getting rows from tables
-		$defaultQ_sql1 = mysql_query("SELECT id FROM quizes WHERE set_default=1")or die(mysql_error());
+		$defaultQ_sql1 = $mysqli->query("SELECT id FROM quizes WHERE set_default=1")or die($mysqli->error);
 	//getting number of rows that were returned
-		$numDefaults = mysql_num_rows($defaultQ_sql1);
+		$numDefaults = $defaultQ_sql1->num_rows;
 	//checking if the number of rows==0
 		if($numDefaults < 1 || $numDefaults > 1){
 			echo "Sorry, there was a problem setting /".$defaultQ."/ default. Please try again later.";
@@ -689,15 +689,15 @@
 		require_once("scripts/connect_db.php");
 
 	//deleting
-		mysql_query("DELETE FROM quiz_takers WHERE quiz_id='$clearR'")or die(mysql_error());
+		$mysqli->query("DELETE FROM quiz_takers WHERE quiz_id='$clearR'")or die($mysqli->error);
 
 
 
  //checking if delete is successful
 	//getting rows from tables
-		$QuizTakersSQL = mysql_query("SELECT id FROM quiz_takers WHERE quiz_id='$clearR' LIMIT 1")or die(mysql_error());
+		$QuizTakersSQL = $mysqli->query("SELECT id FROM quiz_takers WHERE quiz_id='$clearR' LIMIT 1")or die($mysqli->error);
 	//getting number of rows that were returned
-		$numQuizTakers = mysql_num_rows($QuizTakersSQL);
+		$numQuizTakers = $QuizTakersSQL->num_rows;
 	//checking if the number of rows==0
 		if($numQuizTakers > 0){
 			echo "Sorry, there was a problem clearing the result. Please try again later.";
@@ -721,20 +721,20 @@
 		require_once("scripts/connect_db.php");
 
 	//resetting the tables
-		mysql_query("TRUNCATE TABLE questions")or die(mysql_error());
-		mysql_query("TRUNCATE TABLE answers")or die(mysql_error());
+		$mysqli->query("TRUNCATE TABLE questions")or die($mysqli->error);
+		$mysqli->query("TRUNCATE TABLE answers")or die($mysqli->error);
 
 	 ///////Updating value of total questions in quizes
-		mysql_query("UPDATE quizes SET total_questions=0")or die(mysql_error());
+		$mysqli->query("UPDATE quizes SET total_questions=0")or die($mysqli->error);
 
 
  //checking if truncate is successful
 	//getting rows from tables
-		$sql1 = mysql_query("SELECT id FROM questions LIMIT 1")or die(mysql_error());
-		$sql2 = mysql_query("SELECT id FROM answers LIMIT 1")or die(mysql_error());
+		$sql1 = $mysqli->query("SELECT id FROM questions LIMIT 1")or die($mysqli->error);
+		$sql2 = $mysqli->query("SELECT id FROM answers LIMIT 1")or die($mysqli->error);
 	//getting number of rows that were returned
-		$numQuestions = mysql_num_rows($sql1);
-		$numAnswers = mysql_num_rows($sql2);
+		$numQuestions = $sql1->num_rows;
+		$numAnswers = $sql2->num_rows;
 	//checking if the number of rows==0
 		if($numQuestions > 0 || $numAnswers > 0){
 			echo "Sorry, there was a problem reseting the quiz. Please try again later.";
@@ -757,25 +757,25 @@
 		require_once("scripts/connect_db.php");
 
 	//resetting the tables
-		$qz_id_SQL = mysql_query("SELECT quiz_id FROM quizes 
-									WHERE quiz_name = '$deleteQ'")or die(mysql_error());
-		$qz_id_SQL_row = mysql_fetch_array($qz_id_SQL);
+		$qz_id_SQL = $mysqli->query("SELECT quiz_id FROM quizes 
+									WHERE quiz_name = '$deleteQ'")or die($mysqli->error);
+		$qz_id_SQL_row = $qz_id_SQL->fetch_array();
         $qz_id = $qz_id_SQL_row['quiz_id'];
 
-		mysql_query("DELETE FROM quizes WHERE quiz_id = '$qz_id'")or die(mysql_error());
-		mysql_query("DELETE FROM questions WHERE quiz_id = '$qz_id'")or die(mysql_error());
-		mysql_query("DELETE FROM answers WHERE quiz_id = '$qz_id'")or die(mysql_error());
+		$mysqli->query("DELETE FROM quizes WHERE quiz_id = '$qz_id'")or die($mysqli->error);
+		$mysqli->query("DELETE FROM questions WHERE quiz_id = '$qz_id'")or die($mysqli->error);
+		$mysqli->query("DELETE FROM answers WHERE quiz_id = '$qz_id'")or die($mysqli->error);
 
  //checking if delete is successful
 	//getting rows from tables
-		$qz_sql1 = mysql_query("SELECT id FROM questions WHERE quiz_id = '$qz_id' LIMIT 1")or die(mysql_error());
-		$qz_sql2 = mysql_query("SELECT id FROM answers WHERE quiz_id = '$qz_id' LIMIT 1")or die(mysql_error());
-		$qz_sql3 = mysql_query("SELECT id FROM quizes WHERE quiz_id = '$qz_id' LIMIT 1")or die(mysql_error());
+		$qz_sql1 = $mysqli->query("SELECT id FROM questions WHERE quiz_id = '$qz_id' LIMIT 1")or die($mysqli->error);
+		$qz_sql2 = $mysqli->query("SELECT id FROM answers WHERE quiz_id = '$qz_id' LIMIT 1")or die($mysqli->error);
+		$qz_sql3 = $mysqli->query("SELECT id FROM quizes WHERE quiz_id = '$qz_id' LIMIT 1")or die($mysqli->error);
 
 	//getting number of rows that were returned
-		$qz_numQuestions = mysql_num_rows($qz_sql1);
-		$qz_numAnswers = mysql_num_rows($qz_sql2);
-		$qz_numQuizes = mysql_num_rows($qz_sql3);
+		$qz_numQuestions = $qz_sql1->num_rows;
+		$qz_numAnswers = $qz_sql2->num_rows;
+		$qz_numQuizes = $qz_sql3->num_rows;
 	//checking if the number of rows==0
 		if($qz_numQuestions > 0 || $qz_numAnswers > 0 || $qz_numQuizes > 0)
 			echo "Sorry, there was a problem deleting the /".$deleteQ."/ quiz. Please try again later.";
@@ -798,10 +798,10 @@
 	$quizSelect = "";
 	$quizesMenu = "";
 
-	$quizIdSQL = mysql_query("SELECT quiz_id, quiz_name, display_questions, time_allotted FROM quizes") or die(mysql_error());
+	$quizIdSQL = $mysqli->query("SELECT quiz_id, quiz_name, display_questions, time_allotted FROM quizes") or die($mysqli->error);
 
 	 //getting individual quiz's info!
-		while($quizID_row = mysql_fetch_array($quizIdSQL)){
+		while($quizID_row = $quizIdSQL->fetch_array()){
 			$m_quizID = $quizID_row['quiz_id'];
 			$m_quiz_name = $quizID_row['quiz_name'];
 			$m_disp_ques = $quizID_row['display_questions'];
@@ -896,9 +896,9 @@
 	if(isset($_POST['usersQuiz']) && $_POST['usersQuiz'] != ""){
 		$usersQ = $_POST['usersQuiz'];
 
-		$get_quiz_id_SQL = mysql_query("SELECT quiz_id FROM quizes 
-										WHERE quiz_name = '$usersQ'")or die(mysql_error());
-		$get_quiz_id_rows = mysql_fetch_array($get_quiz_id_SQL);
+		$get_quiz_id_SQL = $mysqli->query("SELECT quiz_id FROM quizes 
+										WHERE quiz_name = '$usersQ'")or die($mysqli->error);
+		$get_quiz_id_rows = $get_quiz_id_SQL->fetch_array();
 		$get_quiz_id = $get_quiz_id_rows['quiz_id'];
 
 		$m_output=' <tr align="center">
@@ -911,13 +911,13 @@
 					</tr>
 				 ';
 
-		$multipleSQL = mysql_query("SELECT * FROM quiz_takers 
+		$multipleSQL = $mysqli->query("SELECT * FROM quiz_takers 
 									WHERE quiz_id = '$get_quiz_id'
 									ORDER BY marks desc, duration asc LIMIT 20");
 
 			$m_display_ID = 1;
 
-			while($m_row = mysql_fetch_array($multipleSQL)){
+			while($m_row = $multipleSQL->fetch_array()){
 				$m_answers='';
 			 //id var = id column and so on
 				$m_id = $m_row['id'];
@@ -958,9 +958,9 @@
 	if(isset($_POST['usersAll']) && $_POST['usersAll'] != ""){
 		$usersQ = $_POST['usersAll'];
 
-		$get_quiz_id_SQL = mysql_query("SELECT quiz_id FROM quizes 
-										WHERE quiz_name = '$usersQ'")or die(mysql_error());
-		$get_quiz_id_rows = mysql_fetch_array($get_quiz_id_SQL);
+		$get_quiz_id_SQL = $mysqli->query("SELECT quiz_id FROM quizes 
+										WHERE quiz_name = '$usersQ'")or die($mysqli->error);
+		$get_quiz_id_rows = $get_quiz_id_SQL->fetch_array();
 		$get_quiz_id = $get_quiz_id_rows['quiz_id'];
 
 		$m_output=' <tr align="center">
@@ -973,13 +973,13 @@
 					</tr>
 				 ';
 
-		$multipleSQL = mysql_query("SELECT * FROM quiz_takers 
+		$multipleSQL = $mysqli->query("SELECT * FROM quiz_takers 
 									WHERE quiz_id = '$get_quiz_id'
 									ORDER BY marks desc, duration asc");
 
 			$m_display_ID = 1;
 
-			while($m_row = mysql_fetch_array($multipleSQL)){
+			while($m_row = $multipleSQL->fetch_array()){
 				$m_answers='';
 			 //id var = id column and so on
 				$m_id = $m_row['id'];
@@ -1021,21 +1021,21 @@
 	if(isset($_POST['questionsQuiz']) && $_POST['questionsQuiz'] != ""){
 		$questionsQ = $_POST['questionsQuiz'];
 
-		$get_quiz_id_SQL = mysql_query("SELECT quiz_id FROM quizes 
-										WHERE quiz_name = '$questionsQ'")or die(mysql_error());
-		$get_quiz_id_rows = mysql_fetch_array($get_quiz_id_SQL);
+		$get_quiz_id_SQL = $mysqli->query("SELECT quiz_id FROM quizes 
+										WHERE quiz_name = '$questionsQ'")or die($mysqli->error);
+		$get_quiz_id_rows = $get_quiz_id_SQL->fetch_array();
 		$get_quiz_id = $get_quiz_id_rows['quiz_id'];
 
 		$m_output='';
 
 		if($questionsQ=='allthequestions')
-			$multipleSQL = mysql_query("SELECT * FROM questions") or die(mysql_error());
+			$multipleSQL = $mysqli->query("SELECT * FROM questions") or die($mysqli->error);
 		else
-			$multipleSQL = mysql_query("SELECT * FROM questions WHERE quiz_id = '$get_quiz_id'");
+			$multipleSQL = $mysqli->query("SELECT * FROM questions WHERE quiz_id = '$get_quiz_id'");
 
 			$m_display_ID = 1;
 
-			while($m_row = mysql_fetch_array($multipleSQL)){
+			while($m_row = $multipleSQL->fetch_array()){
 				$m_answers='';
 			 //id var = id column and so on
 				$m_id = $m_row['id'];
@@ -1046,9 +1046,9 @@
 				$m_code_type = $m_row['code_type'];
 				$m_quiz_id = $m_row['quiz_id'];
 
-				$m_quiz_id_SQL = mysql_query("SELECT quiz_name FROM quizes 
-												WHERE quiz_id='$m_quiz_id'") or die(mysql_error());
-				$m_quiz_id_SQL_row = mysql_fetch_array($m_quiz_id_SQL);
+				$m_quiz_id_SQL = $mysqli->query("SELECT quiz_name FROM quizes 
+												WHERE quiz_id='$m_quiz_id'") or die($mysqli->error);
+				$m_quiz_id_SQL_row = $m_quiz_id_SQL->fetch_array();
 				$m_quiz_name = $m_quiz_id_SQL_row['quiz_name'];
 
 			 //putting the question in h2 tag
@@ -1082,7 +1082,7 @@
 				}
 
 			 //gathering answers of question here
-				$m_sql2 = mysql_query("SELECT * FROM answers WHERE question_id='$m_question_id'") or die(mysql_error());
+				$m_sql2 = $mysqli->query("SELECT * FROM answers WHERE question_id='$m_question_id'") or die($mysqli->error);
 				//running loop on all the answers
 
 				$m_answers .=  '<tr>
@@ -1091,7 +1091,7 @@
 										<ol type="a">
 								';
 
-					while($m_row2 = mysql_fetch_array($m_sql2)){
+					while($m_row2 = $m_sql2->fetch_array()){
 					//putting column values in variables
 						$m_answer = $m_row2['answer'];
 						$m_correct = $m_row2['correct'];
@@ -1622,7 +1622,7 @@
 			  	<li>Quiz Management
 			  		<ul>
 			  			<a href="javascript:open_overlay('regNewQuiz','regNewAdmin');">
-			  				<li><span class="plus">+&nbsp;</span> Add New Quiz</li>
+			  				<li><span class="plus">+ </span> Add New Quiz</li>
 			  			</a>
 			  			<?php echo $quizesMenu; ?>
 			  		</ul>
@@ -1719,13 +1719,13 @@
     			<strong>Select whether true or false is the Correct Answer</strong>
     			<br />
 
-            	<input type="text" class="tf_txt_box" id="answer1" name="answer1" value="True" readonly>&nbsp;
+            	<input type="text" class="tf_txt_box" id="answer1" name="answer1" value="True" readonly> 
             	<label style="cursor:pointer; color:#555;">
             		<input type="radio" id="tfans1" name="iscorrect" value="answer1">Correct Answer?
             	</label>
     	  		<br />
    				<br />
-            	<input type="text" class="tf_txt_box" id="answer2" name="answer2" value="False" readonly>&nbsp;
+            	<input type="text" class="tf_txt_box" id="answer2" name="answer2" value="False" readonly> 
               	<label style="cursor:pointer; color:#555;">
             		<input type="radio" id="tfans2" name="iscorrect" value="answer2">Correct Answer?
             	</label>
@@ -1806,7 +1806,7 @@
 
     			<strong>First Option</strong>
     			<br />
-        		<input type="text" class="mc_txt_box" id="mcanswer1" name="answer1">&nbsp;
+        		<input type="text" class="mc_txt_box" id="mcanswer1" name="answer1"> 
           		<label style="cursor:pointer; color:#555;">
           			<input type="radio" id="mcans1" name="iscorrect" value="answer1">Correct Answer?
         		</label>
@@ -1814,7 +1814,7 @@
     			<br />
     			<strong>Second Option</strong>
     			<br />
-        		<input type="text" class="mc_txt_box" id="mcanswer2" name="answer2">&nbsp;
+        		<input type="text" class="mc_txt_box" id="mcanswer2" name="answer2"> 
           		<label style="cursor:pointer; color:#555;">
           			<input type="radio" id="mcans2" name="iscorrect" value="answer2">Correct Answer?
         		</label>
@@ -1822,7 +1822,7 @@
     			<br />
     			<strong>Third Option</strong>
     			<br />
-        		<input type="text" class="mc_txt_box" id="mcanswer3" name="answer3">&nbsp;
+        		<input type="text" class="mc_txt_box" id="mcanswer3" name="answer3"> 
           		<label style="cursor:pointer; color:#555;">
           			<input type="radio"  id="mcans3" name="iscorrect" value="answer3">Correct Answer?
         		</label>
@@ -1830,7 +1830,7 @@
     			<br />
     			<strong>Fourth Option</strong>
     			<br />
-        		<input type="text" class="mc_txt_box" id="mcanswer4" name="answer4">&nbsp;
+        		<input type="text" class="mc_txt_box" id="mcanswer4" name="answer4"> 
           		<label style="cursor:pointer; color:#555;">
           			<input type="radio"  id="mcans4" name="iscorrect" value="answer4">Correct Answer?
         		</label>
@@ -1912,7 +1912,7 @@
                         </td>
                         
                         <td align="right" id="developer" >
-                            Quiz Designed &amp; Developed by : 
+                            Quiz Designed & Developed by : 
                             <a href="mailto: rahul_jain@live.in" class="flink" style="color: #c4dcf5">
                                 Rahul Jain<div id="dev_info">1139234/CSE/6thSEM</div>
                             </a>

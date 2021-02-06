@@ -6,9 +6,9 @@
 
 	$check=$_SESSION['login_username'];
 
-	$session=mysql_query("SELECT username FROM admins WHERE username='$check' ")or die(mysql_error());
+	$session=$mysqli->query("SELECT username FROM admins WHERE username='$check' ")or die($mysqli->error);
 
-	$row=mysql_fetch_array($session);
+	$row=$session->fetch_array();
 
 	$login_session=$row['username'];
 

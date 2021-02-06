@@ -43,30 +43,30 @@
 	                @$fetch_ID = "rads".$i;
 	                @$php_id = $_POST[$fetch_ID];
 
-	                $check_sql = mysql_query("SELECT correct FROM answers 
-	                                            WHERE id='$php_id'") or die(mysql_error());
-	                $q_answer = mysql_fetch_array($check_sql);
+	                $check_sql = $mysqli->query("SELECT correct FROM answers 
+	                                            WHERE id='$php_id'") or die($mysqli->error);
+	                $q_answer = $check_sql->fetch_array();
 	                $marks += $q_answer[0];
 	            }
 	            $percent = ($marks/$total_questions)*100;
 
 	         //getting total time taken by the user to complete the quiz
-	            $get_time_query = mysql_query("SELECT now() - date_time FROM quiz_takers 
-	                                            WHERE username = '$roll_no' ") or die(mysql_error());
-	            $get_time = mysql_fetch_array($get_time_query);
+	            $get_time_query = $mysqli->query("SELECT now() - date_time FROM quiz_takers 
+	                                            WHERE username = '$roll_no' ") or die($mysqli->error);
+	            $get_time = $get_time_query->fetch_array();
 	            $time_taken = $get_time[0];
 
-	            $check_time_query = mysql_query("SELECT duration FROM quiz_takers 
+	            $check_time_query = $mysqli->query("SELECT duration FROM quiz_takers 
 	                                            WHERE username = '$roll_no' 
-	                                            AND quiz_id = '$quiz_ID' ") or die(mysql_error());
-	            $check_time = mysql_fetch_array($check_time_query);
+	                                            AND quiz_id = '$quiz_ID' ") or die($mysqli->error);
+	            $check_time = $check_time_query->fetch_array();
 	            $duration = $check_time[0];
 
 	            if($duration==0){
 		         //updating the %age and time taken by the user in the DB
-	            	mysql_query("UPDATE quiz_takers 
+	            	$mysqli->query("UPDATE quiz_takers 
 	                	         SET marks='$marks', percentage= '$percent', duration= '$time_taken', quiz_id= '$quiz_ID'
-	                    	     WHERE username = '$roll_no' ")or die(mysql_error());
+	                    	     WHERE username = '$roll_no' ")or die($mysqli->error);
 	            }else{
 	            	$user_msg = 'Sorry, but re-submission of the quiz isn\'t allowed!';
 	        		header('location: index.php?user_msg='.$user_msg.'');
@@ -176,7 +176,7 @@
                             to pass time!
                         </td>
                         <td align="right" id="developer" >
-                            Quiz Designed &amp; Developed by : 
+                            Quiz Designed & Developed by : 
                             <a href="mailto: rahul_jain@live.in" class="flink" style="color: #c4dcf5">
                                 Rahul Jain<div id="dev_info">1139234/CSE/6thSEM</div>
                             </a>
